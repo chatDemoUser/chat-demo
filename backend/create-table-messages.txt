@@ -1,0 +1,7 @@
+CREATE TABLE messages (
+	message_id serial PRIMARY KEY,
+	sender int NOT NULL references users(id),
+    recipient int NOT NULL references users(id),
+	message text NOT NULL,
+	created_on TIMESTAMP default current_timestamp
+);
