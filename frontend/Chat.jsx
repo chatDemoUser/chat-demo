@@ -1,35 +1,13 @@
-import axios from 'axios';
-import React, { Component } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import React, { Component } from "react";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-balham.css";
 
-import { getAllMessagesFromSender } from '../../api';
+import { getAllMessagesFromSender, insertMessage } from "../api/api";
 
-import TimeRenderer from './TimeRenderer';
+import TimeRenderer from "./TimeRenderer";
 
-import '@fortawesome/fontawesome-free/css/all.css';
-
-const config = {
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-    Pragma: 'no-cache',
-  },
-};
-
-async function insertMessage(chatUser, message) {
-  const url = '/api/messages/insert';
-  const data = {
-    recipientName: chatUser,
-    message,
-  };
-
-  const response = await axios.post(url, null, {
-    params: data,
-    headers: config.headers,
-  });
-  return response.data;
-}
+import "@fortawesome/fontawesome-free/css/all.css";
 
 class ActivityStream extends Component {
   constructor(props) {
@@ -40,31 +18,31 @@ class ActivityStream extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRecipientValueChange = this.handleRecipientValueChange.bind(
-      this,
+      this
     );
     this.handleActivityChange = this.handleActivityChange.bind(this);
     this.handleMessageValueChange = this.handleMessageValueChange.bind(this);
 
     this.state = {
-      message: '',
-      chatUser: '',
+      message: "",
+      chatUser: "",
       columnDefs: [
         {
-          headerName: 'Time',
-          field: 'created',
-          cellRenderer: 'timeRenderer',
+          headerName: "Time",
+          field: "created",
+          cellRenderer: "timeRenderer",
           minWidth: 50,
           width: 230,
           maxWidth: 230,
         },
         {
-          headerName: 'From',
-          field: 'sender',
+          headerName: "From",
+          field: "sender",
           width: 70,
         },
         {
-          headerName: 'Message',
-          field: 'message',
+          headerName: "Message",
+          field: "message",
           width: 500,
         },
       ],
@@ -78,7 +56,7 @@ class ActivityStream extends Component {
   handleSubmit(event) {
     const { chatUser, message } = this.state;
     insertMessage(chatUser, message).then((res) => {
-      if (res === 'success') {
+      if (res === "success") {
         this.updateData();
       }
     });
@@ -105,7 +83,6 @@ class ActivityStream extends Component {
   updateData() {
     const { chatUser } = this.state;
     getAllMessagesFromSender(chatUser).then((result) => {
-      console.log(result);
       if (result) {
         this.setState({
           rowData: result,
@@ -122,7 +99,7 @@ class ActivityStream extends Component {
       },
       () => {
         this.updateData();
-      },
+      }
     );
   }
 
@@ -136,7 +113,7 @@ class ActivityStream extends Component {
     } = this.state;
     return (
       <div>
-        <div className="row" style={{ marginLeft: '10px' }}>
+        <div className="row" style={{ marginLeft: "10px" }}>
           <div className="col-md-6">
             <div>
               <label htmlFor="fromValue">Chat with:</label>
@@ -149,7 +126,6 @@ class ActivityStream extends Component {
                 <option value=""></option>
                 <option value="user1">user1</option>
                 <option value="user2">user2</option>
-                <option value="user3">user3</option>
               </select>
               <br />
               <br />
